@@ -3,15 +3,22 @@
     <vue-grid>
       <vue-grid-row>
         <vue-grid-item fill>
-          <vue-headline level="1">Expenses</vue-headline>
+          <div style="width:100%">
+            <vue-donut-chart title="Expenses" :data="donutData" unit="AUD"/>
+          </div>
+
+          <vue-data-table
+            :header="header"
+            :data="data"
+            :maxRows="100"
+            placeholder="Search"
+            @click="click"
+          >
+            <template v-slot:coloured="{ cell, row }">
+              <div :style="{ color: colour(row) }">{{cell.value}}</div>
+            </template>
+          </vue-data-table>
         </vue-grid-item>
-
-        <vue-data-table :header="header" :data="data" :maxRows="100" placeholder="Search" @click="click">
-          <template v-slot:coloured="{ cell, row }">
-           <div :style="{ color: colour(row) }"> {{cell.value}}</div>
-          </template>
-        </vue-data-table>
-
       </vue-grid-row>
     </vue-grid>
   </div>
@@ -28,6 +35,7 @@ import VueButton from '@/app/shared/components/VueButton/VueButton.vue';
 import VueGridRow from '@/app/shared/components/VueGridRow/VueGridRow.vue';
 import VueHeadline from '@/app/shared/components/VueHeadline/VueHeadline.vue';
 import VueDataTable from '@/app/shared/components/VueDataTable/VueDataTable.vue';
+import VueDonutChart from '@/app/shared/components/VueDonutChart/VueDonutChart.vue';
 import { dataTableHeaderFixture, dataTableDataFixture } from '@/app/shared/components/VueDataTable/DataTableFixtures';
 
 import Papa from 'papaparse';
@@ -40,6 +48,14 @@ export default {
     return {
       header: dataTableHeaderFixture,
       data: dataTableDataFixture,
+      donutData: [
+        { label: 'Ironman', value: 892 },
+        { label: 'Vision', value: 480 },
+        { label: 'Hulk', value: 1506 },
+        { label: 'Spiderman', value: 795 },
+        { label: 'Thor', value: 579 },
+        { label: 'Ant-man', value: 230 },
+      ],
     };
   },
   components: {
@@ -49,6 +65,7 @@ export default {
     VueGridRow,
     VueHeadline,
     VueDataTable,
+    VueDonutChart,
   },
   methods: {
     ...mapActions('expenses', ['increment', 'decrement']),
@@ -65,7 +82,7 @@ export default {
           for (var key of Object.keys(results.data[0])) {
             header[key] = {
               title: key,
-              slot:'coloured'
+              slot: 'coloured',
             };
           }
           this.header = header;
@@ -76,8 +93,10 @@ export default {
       });
     },
     colour(row: any) {
-      return row["Narration"] && (row["Narration"].includes(' W  ARWICK') || row["Narration"].includes(' WARWICK')) ? 'red' : 'black'
-    }
+      return row['Narration'] && (row['Narration'].includes(' W  ARWICK') || row['Narration'].includes(' WARWICK'))
+        ? 'red'
+        : 'black';
+    },
   },
   computed: {
     ...mapGetters('expenses', ['count', 'incrementPending', 'decrementPending']),
