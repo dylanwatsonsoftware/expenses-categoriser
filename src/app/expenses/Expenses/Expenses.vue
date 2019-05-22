@@ -6,7 +6,12 @@
           <vue-headline level="1">Expenses</vue-headline>
         </vue-grid-item>
 
-        <vue-data-table :header="header" :data="data" :maxRows="100" placeholder="Search" @click="click"/>
+        <vue-data-table :header="header" :data="data" :maxRows="100" placeholder="Search" @click="click">
+          <template v-slot:coloured="{ cell, row }">
+           <div :style="{ color: colour(row) }"> {{cell.value}}</div>
+          </template>
+        </vue-data-table>
+
       </vue-grid-row>
     </vue-grid>
   </div>
@@ -60,6 +65,7 @@ export default {
           for (var key of Object.keys(results.data[0])) {
             header[key] = {
               title: key,
+              slot:'coloured'
             };
           }
           this.header = header;
@@ -69,6 +75,9 @@ export default {
         },
       });
     },
+    colour(row: any) {
+      return row["Narration"] && (row["Narration"].includes(' W  ARWICK') || row["Narration"].includes(' WARWICK')) ? 'red' : 'black'
+    }
   },
   computed: {
     ...mapGetters('expenses', ['count', 'incrementPending', 'decrementPending']),
