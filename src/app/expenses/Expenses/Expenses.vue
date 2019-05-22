@@ -6,15 +6,6 @@
           <vue-headline level="1">Expenses</vue-headline>
         </vue-grid-item>
 
-        <vue-grid-item fill>
-          <vue-button color="secondary" :loading="incrementPending" @click='increment'>Increment +1</vue-button>
-          <br />
-          <br />
-        </vue-grid-item>
-        <vue-grid-item fill>
-          <vue-button color="primary" :loading="decrementPending" @click='decrement'>Decrement -1</vue-button>
-          <vue-headline level="3">Count is {{ count }}</vue-headline>
-        </vue-grid-item>
       </vue-grid-row>
     </vue-grid>
   </div>

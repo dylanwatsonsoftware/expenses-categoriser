@@ -9,107 +9,21 @@
         <vue-icon-vuesion :class="$style.logo" />
       </router-link>
 
-      <vue-button slot="right" v-if="isAuthenticated === false" color="primary" @click="showLoginModal = true">
-        Login
-      </vue-button>
-
-      <vue-button slot="right" v-if="isAuthenticated" color="primary" @click="onLogout">
-        Logout
-      </vue-button>
     </vue-nav-bar>
 
     <router-view :class="$style.content" />
 
     <vue-footer />
 
-    <vue-cookie-consent
-      current-version="1.0.0"
-      :cookie-consent-version="cookieConsentVersion"
-      :set-cookie-consent-version="setCookieConsentVersion"
-    >
-      This is a cookie consent component which shows the cookie consent every time you change the version of the
-      consent.
-    </vue-cookie-consent>
-
     <vue-sidebar>
-      <vue-sidebar-group title="Languages">
-        <vue-sidebar-group-item>
-          <vue-select name="lang" id="lang" :options="languages" @input="localeSwitch" :value="getLocale" />
-        </vue-sidebar-group-item>
-      </vue-sidebar-group>
-
       <vue-sidebar-group title="Navigation">
-        <vue-sidebar-group-item to="/">
-          <vue-icon-code />
-          Home
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item to="/counter">
-          <vue-icon-hashtag />
-          VueX Example
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item to="/form">
-          <vue-icon-hashtag />
-          Form Example
+        <vue-sidebar-group-item to="/expenses">
+          <vue-icon-book />
+          Expenses
         </vue-sidebar-group-item>
       </vue-sidebar-group>
 
-      <vue-sidebar-group title="Documentation">
-        <vue-sidebar-group-item>
-          <a href="https://vuesion.github.io/docs/en/">
-            <vue-icon-book />
-            Documentation
-          </a>
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item>
-          <a href="/storybook/?path=/story/design-system-design-system--intro">
-            <vue-icon-book />
-            Design System
-          </a>
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item>
-          <a href="/storybook/?path=/story/atoms-badge--badge-variants">
-            <vue-icon-puzzle-piece />
-            Components
-          </a>
-        </vue-sidebar-group-item>
-      </vue-sidebar-group>
-
-      <vue-sidebar-group title="Community">
-        <vue-sidebar-group-item>
-          <a href="https://github.com/vuesion/vuesion" target="_blank" rel="noopener">
-            <vue-icon-github />
-            Github
-          </a>
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item>
-          <a href="https://discord.gg/59x5cg2" target="_blank" rel="noopener"> Discord </a>
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item>
-          <a href="https://slack-vuesion.herokuapp.com/" target="_blank" rel="noopener"> Slack </a>
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item>
-          <a href="https://chat.vuejs.org/" target="_blank" rel="noopener"> VueLand </a>
-        </vue-sidebar-group-item>
-
-        <vue-sidebar-group-item>
-          <a href="https://twitter.com/vuesion1" target="_blank" rel="noopener">
-            <vue-icon-twitter-square />
-            Twitter
-          </a>
-        </vue-sidebar-group-item>
-      </vue-sidebar-group>
     </vue-sidebar>
-
-    <vue-modal :show="showLoginModal" @close="showLoginModal = false">
-      <login-form :loading="isLoginPending" @submit="onLoginSubmit" />
-    </vue-modal>
   </div>
 </template>
 
