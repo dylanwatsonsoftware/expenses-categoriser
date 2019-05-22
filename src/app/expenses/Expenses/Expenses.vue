@@ -6,6 +6,7 @@
           <vue-headline level="1">Expenses</vue-headline>
         </vue-grid-item>
 
+        <vue-data-table :header="header" :data="data" placeholder="Search" @click="click" />
       </vue-grid-row>
     </vue-grid>
   </div>
@@ -21,10 +22,18 @@ import VueGridItem from '@/app/shared/components/VueGridItem/VueGridItem.vue';
 import VueButton from '@/app/shared/components/VueButton/VueButton.vue';
 import VueGridRow from '@/app/shared/components/VueGridRow/VueGridRow.vue';
 import VueHeadline from '@/app/shared/components/VueHeadline/VueHeadline.vue';
+import VueDataTable from '@/app/shared/components/VueDataTable/VueDataTable.vue';
+import { dataTableHeaderFixture, dataTableDataFixture } from '@/app/shared/components/VueDataTable/DataTableFixtures';
 
 export default {
   metaInfo:   {
     title: 'Expenses',
+  },
+  data: () => {
+    return {
+      header: dataTableHeaderFixture,
+      data: dataTableDataFixture
+    }
   },
   components: {
     VueGrid,
@@ -32,9 +41,13 @@ export default {
     VueButton,
     VueGridRow,
     VueHeadline,
+    VueDataTable,
   },
   methods: {
     ...mapActions('expenses', ['increment', 'decrement']),
+    click(row: any) {
+      alert(JSON.stringify(row));
+    }
   },
   computed: {
     ...mapGetters('expenses', ['count', 'incrementPending', 'decrementPending']),
