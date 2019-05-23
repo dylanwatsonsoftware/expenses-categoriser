@@ -88,6 +88,27 @@ export default {
           this.header = header;
           this.data = results.data;
 
+          let expenses = {
+            label: 'Expenses',
+            value: 0,
+          };
+          
+          let income = {
+            label: 'Income',
+            value: 0,
+          };
+
+          this.donutData = [expenses, income];
+          results.data.forEach((row) => {
+            if (row['Debit']) {
+              expenses.value += parseFloat(row['Debit']);
+            } else if (row['Credit']) {
+              income.value += parseFloat(row['Credit']);
+            }
+          });
+          expenses.value = Math.round(expenses.value / 3);
+          income.value = Math.round(income.value / 3);
+
           console.log(this.data);
         },
       });
