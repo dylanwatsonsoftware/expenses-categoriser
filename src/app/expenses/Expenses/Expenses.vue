@@ -38,6 +38,8 @@ import VueDataTable from '@/app/shared/components/VueDataTable/VueDataTable.vue'
 import VueDonutChart from '@/app/shared/components/VueDonutChart/VueDonutChart.vue';
 import { dataTableHeaderFixture, dataTableDataFixture } from '@/app/shared/components/VueDataTable/DataTableFixtures';
 
+import * as _ from 'lodash';
+
 import Papa from 'papaparse';
 
 export default {
@@ -85,38 +87,51 @@ export default {
               slot: 'coloured',
             };
           }
-          this.header = header;
-          this.data = results.data;
 
-          let expenses = {
-            label: 'Expenses',
-            value: 0,
-          };
-          
-          let income = {
-            label: 'Income',
-            value: 0,
+          header['Category'] = {
+            title: 'Category',
+            slot: 'coloured',
           };
 
-          this.donutData = [expenses, income];
-          results.data.forEach((row) => {
-            if (row['Debit']) {
-              expenses.value += parseFloat(row['Debit']);
-            } else if (row['Credit']) {
-              income.value += parseFloat(row['Credit']);
+          let categorise = (row: any, filter: string, category: string) => {
+            if (!row.Narration || row.Category) return;
+
+            if (new RegExp(filter).test(row.Narration)) {
+              row.Category = category;
+              console.log(row);
             }
-          });
-          expenses.value = Math.round(expenses.value / 3);
-          income.value = Math.round(income.value / 3);
+          };
 
-          console.log(this.data);
+          results.data.forEach((row) => {
+            categorise(row, '.*KMART.*', 'Kmart');
+            categorise(row, '.*COLES.*', 'Coles');
+            categorise(row, '.*PARK.*', 'Parking');
+            categorise(row, '.*(VET|PET).*', 'Pet');
+          });
+
+          this.header = header;
+          this.data = results.data; //.filter((row) => !!row.Category);
+
+          let categories = _.groupBy(this.data, 'Category');
+          let categoryArray = [];
+          this.donutData = []
+          for (let key in <any>categories) {
+            this.donutData.push({
+              label: key,
+              value: Math.round(_.sumBy(
+                categories[key].map((r: any) => ({
+                  ...r,
+                  Debit: parseFloat(r.Debit) || 0,
+                })),
+                'Debit',
+              )),
+            });
+          }
         },
       });
     },
     colour(row: any) {
-      return row['Narration'] && (row['Narration'].includes(' W  ARWICK') || row['Narration'].includes(' WARWICK'))
-        ? 'red'
-        : 'black';
+      return row['Narration'] && row.Category ? 'red' : 'black';
     },
   },
   computed: {
