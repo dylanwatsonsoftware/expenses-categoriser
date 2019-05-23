@@ -103,10 +103,27 @@ export default {
           };
 
           results.data.forEach((row) => {
-            categorise(row, '.*KMART.*', 'Kmart');
-            categorise(row, '.*COLES.*', 'Coles');
+            categorise(row, '.*(KMART|RED DOT|MYER).*', 'House');
+            categorise(row, '.*(COLES|WOOLWORTHS|ALDI|IGA|BAKERY).*', 'Groceries');
+            categorise(row, '.*(LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO).*', 'Coffee');
+            categorise(row, '.*(REBEL|HBF RUN).*', 'Sport');
+            categorise(row, '.*(SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN).*', 'Food');
+            categorise(row, '.*(HAIR|BARBER|NAILS).*', 'Hair/Makeup');
+            categorise(row, '.*(LIQUOR|DAN MURPHYS|STREET EATS).*', 'Alcohol');
+            categorise(row, '.*(INSURANCE).*', 'Insurance');
+            categorise(row, '.*(NETFLIX).*', 'TV');
+            categorise(row, '.*(POST).*', 'Office');
+            categorise(row, '.*(BOOKS).*', 'Books');
+            categorise(row, '.*(GFP BABIES).*', 'Photos');
+            categorise(row, '.*(EBAY).*', 'eBay');
+            categorise(row, '.*(BIRTHS DEATHS).*', 'Office');
+            categorise(row, '.*(TELSTRA|OPTUS).*', 'Mobile');
+            categorise(row, '.*(LATITUDE|PROUDS|ETSY).*', 'Jewellery');
+            categorise(row, '.*(CALTEX).*', 'Fuel');
+            categorise(row, '.*(Broadband|IINET).*', 'Internet');
+            categorise(row, '.*(PHARMACY|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS).*', 'Health');
             categorise(row, '.*PARK.*', 'Parking');
-            categorise(row, '.*(VET|PET).*', 'Pet');
+            categorise(row, '.*(Vet|VET|PET).*', 'Pet');
           });
 
           this.header = header;
@@ -117,7 +134,7 @@ export default {
           this.donutData = []
           for (let key in <any>categories) {
             this.donutData.push({
-              label: key,
+              label: key === 'undefined' ? 'Other' : key,
               value: Math.round(_.sumBy(
                 categories[key].map((r: any) => ({
                   ...r,
