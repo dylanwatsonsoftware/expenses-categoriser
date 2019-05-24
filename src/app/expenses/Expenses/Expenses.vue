@@ -151,7 +151,7 @@ export default {
       });
     },
     colour(row: any) {
-      return row['Narration'] && row.Category ? 'red' : 'black';
+      return row['Narration'] && row.Category ? 'black' : 'red';
     },
   },
   computed: {
