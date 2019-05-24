@@ -103,27 +103,30 @@ export default {
           };
 
           results.data.forEach((row) => {
-            categorise(row, '.*(KMART|RED DOT|MYER).*', 'House');
-            categorise(row, '.*(COLES|WOOLWORTHS|ALDI|IGA|BAKERY).*', 'Groceries');
-            categorise(row, '.*(LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO).*', 'Coffee');
+            categorise(row, '.*(KMART|RED DOT|BUNNINGS|BEST & LESS).*', 'House');
+            categorise(row, '.*(SPUDSHED|COLES|WOOLWORTHS|ALDI|IGA|BAKERY|MR FRESH|VEEOS|FRESH|Fresh|ORIENTAL).*', 'Groceries');
+            categorise(row, '.*(MAX AND SONS|LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO|96 Express|Holiday Inn City Centr|Coffee|GHIASSI|UTOPIA|Voodoo).*', 'Coffee');
             categorise(row, '.*(REBEL|HBF RUN).*', 'Sport');
-            categorise(row, '.*(SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN).*', 'Food');
-            categorise(row, '.*(HAIR|BARBER|NAILS).*', 'Hair/Makeup');
+            categorise(row, '.*(Menulog|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*', 'Food');
+            categorise(row, '.*(HAIR|BARBER|NAILS|Threading).*', 'Hair/Makeup');
             categorise(row, '.*(LIQUOR|DAN MURPHYS|STREET EATS).*', 'Alcohol');
             categorise(row, '.*(INSURANCE).*', 'Insurance');
             categorise(row, '.*(NETFLIX).*', 'TV');
             categorise(row, '.*(POST).*', 'Office');
-            categorise(row, '.*(BOOKS).*', 'Books');
+            categorise(row, '.*(BOOKS|AMAZON MKTPLC|BOOKDEPO).*', 'Books');
             categorise(row, '.*(GFP BABIES).*', 'Photos');
             categorise(row, '.*(EBAY).*', 'eBay');
             categorise(row, '.*(BIRTHS DEATHS).*', 'Office');
             categorise(row, '.*(TELSTRA|OPTUS).*', 'Mobile');
             categorise(row, '.*(LATITUDE|PROUDS|ETSY).*', 'Jewellery');
+            categorise(row, '.*(MYER|RIVERS).*', 'Clothing');
             categorise(row, '.*(CALTEX).*', 'Fuel');
+            categorise(row, '.*(UBER).*', 'Ridesharing');
             categorise(row, '.*(Broadband|IINET).*', 'Internet');
-            categorise(row, '.*(PHARMACY|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS).*', 'Health');
+            categorise(row, '.*(PHARMACY|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE).*', 'Health');
             categorise(row, '.*PARK.*', 'Parking');
             categorise(row, '.*(Vet|VET|PET).*', 'Pet');
+            categorise(row, '.*(SYNERGY).*', 'Utilities');
           });
 
           this.header = header;
