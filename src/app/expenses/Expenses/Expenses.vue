@@ -104,10 +104,22 @@ export default {
 
           results.data.forEach((row) => {
             categorise(row, '.*(KMART|RED DOT|BUNNINGS|BEST & LESS).*', 'House');
-            categorise(row, '.*(SPUDSHED|COLES|WOOLWORTHS|ALDI|IGA|BAKERY|MR FRESH|VEEOS|FRESH|Fresh|ORIENTAL).*', 'Groceries');
-            categorise(row, '.*(MAX AND SONS|LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO|96 Express|Holiday Inn City Centr|Coffee|GHIASSI|UTOPIA|Voodoo).*', 'Coffee');
+            categorise(
+              row,
+              '.*(SPUDSHED|COLES|WOOLWORTHS|ALDI|IGA|BAKERY|MR FRESH|VEEOS|FRESH|Fresh|ORIENTAL).*',
+              'Groceries',
+            );
+            categorise(
+              row,
+              '.*(MAX AND SONS|LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO|96 Express|Holiday Inn City Centr|Coffee|GHIASSI|UTOPIA|Voodoo).*',
+              'Coffee',
+            );
             categorise(row, '.*(REBEL|HBF RUN).*', 'Sport');
-            categorise(row, '.*(Menulog|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*', 'Food');
+            categorise(
+              row,
+              '.*(Menulog|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
+              'Food',
+            );
             categorise(row, '.*(HAIR|BARBER|NAILS|Threading).*', 'Hair/Makeup');
             categorise(row, '.*(LIQUOR|DAN MURPHYS|STREET EATS).*', 'Alcohol');
             categorise(row, '.*(INSURANCE).*', 'Insurance');
@@ -134,17 +146,19 @@ export default {
 
           let categories = _.groupBy(this.data, 'Category');
           let categoryArray = [];
-          this.donutData = []
+          this.donutData = [];
           for (let key in <any>categories) {
             this.donutData.push({
               label: key === 'undefined' ? 'Other' : key,
-              value: Math.round(_.sumBy(
-                categories[key].map((r: any) => ({
-                  ...r,
-                  Debit: parseFloat(r.Debit) || 0,
-                })),
-                'Debit',
-              )),
+              value: Math.round(
+                _.sumBy(
+                  categories[key].map((r: any) => ({
+                    ...r,
+                    Debit: parseFloat(r.Debit) || 0,
+                  })),
+                  'Debit',
+                ),
+              ),
             });
           }
         },
