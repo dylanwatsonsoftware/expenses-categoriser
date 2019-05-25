@@ -226,8 +226,8 @@ export default {
       });
 
       if (abnResult.data.BusinessName.length) {
-        this.$set(this.narrationMap, cell.value, abnResult.data.BusinessName[0]);
-        console.log('BusinessName', abnResult.data.BusinessName[0]);
+        this.$set(this.narrationMap, cell.value, abnResult.data.BusinessName[0] + " - " + foundAbn.Name);
+        console.log('BusinessName', abnResult.data.BusinessName[0] + " - " + foundAbn.Name);
       } else {
         console.log('No business name found');
       }
