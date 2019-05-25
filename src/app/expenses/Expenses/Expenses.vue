@@ -19,12 +19,18 @@
                 v-if="cell.key === 'Narration' && !cell.hideSearch"
                 @click="getABNName(cell, row)"
               >Search</button>
-              <div :style="{ color: colour(row) }">{{narrationMap[cell.value]}}<br>{{cell.value}}</div>
+              <div :style="{ color: colour(row) }">
+                {{narrationMap[cell.value]}}
+                <br>
+                {{cell.value}}
+              </div>
             </template>
           </vue-data-table>
         </vue-grid-item>
       </vue-grid-row>
     </vue-grid>
+    <br>
+    <br>
   </div>
 </template>
 
@@ -53,7 +59,10 @@ export default {
   },
   data: () => {
     return {
-      narrationMap: {},
+      narrationMap: {
+        'PLINE PH JOONDALUP631    JOONDALUP': 'Priceline Pharmacy',
+        'WEST LEEDERVILLE         WEST LEEDERVIWA': 'Hylin'
+      },
       header: dataTableHeaderFixture,
       data: dataTableDataFixture,
       donutData: [
@@ -102,52 +111,64 @@ export default {
           let categorise = (row: any, filter: string, category: string) => {
             if (!row.Narration || row.Category) return;
 
-            if (new RegExp(filter).test(row.Narration)) {
+            if (new RegExp(filter).test(row.Narration) || new RegExp(filter).test(this.narrationMap[row.Narration]) ) {
               row.Category = category;
             }
           };
 
           results.data.forEach((row) => {
-            categorise(row, '.*(KMART|RED DOT|BUNNINGS|BEST & LESS).*', 'House');
             categorise(
               row,
-              '.*(SPUDSHED|COLES|WOOLWORTHS|ALDI|IGA|BAKERY|MR FRESH|VEEOS|FRESH|Fresh|ORIENTAL).*',
+              '.*(Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
+              'Health',
+            );
+            categorise(row, '.*(KMART|RED DOT|BUNNINGS|BEST & LESS|HOME|TARGET|BIG W).*', 'House');
+            categorise(
+              row,
+              '.*(Amazon Go|SPUDSHED|COLES|WOOLWORTHS|ALDI|IGA|BAKERY|MR FRESH|VEEOS|FRESH|Fresh|ORIENTAL).*',
               'Groceries',
             );
             categorise(
               row,
-              '.*(MAX AND SONS|LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO|96 Express|Holiday Inn City Centr|Coffee|GHIASSI|UTOPIA|Voodoo).*',
+              '.*(RAW N REAL|PAYSTAY|GAME CITY|ESPRESSO|Hylin|MAGDIEL|Filter & Fare|CAFE|Caffe|DELAWARE NORTH|Muzz Buzz|MAX AND SONS|LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO|96 Express|Holiday Inn City Centr|Coffee|GHIASSI|UTOPIA|Voodoo).*',
               'Coffee',
             );
-            categorise(row, '.*(REBEL|HBF RUN).*', 'Sport');
             categorise(
               row,
-              '.*(Menulog|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
+              '.*(MASS/INJ|INDIAN|HISS & SMOKE|Isle Of Voyage|THAI|MAD MEX|KFC|UNCLE JOES|DOMINOS|BBQ|SATAY|ZAMBRERO|CHIMEK|TOKYO STATION|LEEDERVILLE FOODS|DJ COMBINE|COLD ROCK|Jesters Pies|GREEKFELLAS|iL Tavolo Rustico|VASHNAV|CHINESE|ZHONG LIANG|GHIRARDELLI|Menulog|BOUDIN|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
               'Food',
             );
+            categorise(row, '.*(REBEL|HBF RUN|SPORTS|GOOD LIFE).*', 'Sport');
             categorise(row, '.*(HAIR|BARBER|NAILS|Threading).*', 'Hair/Makeup');
-            categorise(row, '.*(LIQUOR|DAN MURPHYS|STREET EATS).*', 'Alcohol');
+            categorise(row, '.*(LIQUOR|DAN MURPHYS|STREET EATS|BEAUMONDE|BANKWEST FOUNDATION).*', 'Alcohol');
             categorise(row, '.*(INSURANCE).*', 'Insurance');
             categorise(row, '.*(NETFLIX).*', 'TV');
             categorise(row, '.*(POST).*', 'Office');
-            categorise(row, '.*(BOOKS|AMAZON MKTPLC|BOOKDEPO).*', 'Books');
+            categorise(row, '.*(BIRTHS DEATHS).*', 'Office');
+            categorise(row, '.*(BOOKS|AMAZON MKTPLC|BOOKDEPO|TREASA).*', 'Books');
             categorise(row, '.*(GFP BABIES).*', 'Photos');
             categorise(row, '.*(EBAY).*', 'eBay');
-            categorise(row, '.*(BIRTHS DEATHS).*', 'Office');
-            categorise(row, '.*(TELSTRA|OPTUS).*', 'Mobile');
+            categorise(row, '.*(TELSTRA|OPTUS|AT&T).*', 'Mobile');
             categorise(row, '.*(LATITUDE|PROUDS|ETSY).*', 'Jewellery');
-            categorise(row, '.*(MYER|RIVERS).*', 'Clothing');
+            categorise(row, '.*(MYER|RIVERS|SHOEMEN|WITCHERY|SUSSAN|MILLERS|WATERTOWN).*', 'Clothing');
+            categorise(row, '.*(Vehicle).*', 'Car');
             categorise(row, '.*(CALTEX).*', 'Fuel');
             categorise(row, '.*(UBER).*', 'Ridesharing');
             categorise(row, '.*(Broadband|IINET).*', 'Internet');
-            categorise(row, '.*(PHARMACY|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE).*', 'Health');
-            categorise(row, '.*PARK.*', 'Parking');
+            categorise(row, '.*(PARK|CPP).*', 'Parking');
             categorise(row, '.*(Vet|VET|PET).*', 'Pet');
             categorise(row, '.*(SYNERGY).*', 'Utilities');
+            categorise(row, '.*(HYATT|OAKLAND|SAN FRANCISCO|AIRPORT|SAUSALITO).*', 'Travel');
+            categorise(row, '.*(OPEN DOOR).*', 'Charity');
+
+            categorise(row, '.*(ENTERTAINMENT).*', 'Entertainment');
+
+            categorise(row, '.*(SQ *).*', 'Food');
+            categorise(row, '.*(PAYPAL|Groupon).*', 'Online Shopping');
           });
 
           this.header = header;
-          this.data = results.data; //.filter((row) => !!row.Category);
+          this.data = results.data//.filter((row) => !row.Category);
 
           let categories = _.groupBy(this.data, 'Category');
           let categoryArray = [];
@@ -173,6 +194,8 @@ export default {
       return row['Narration'] && row.Category ? 'black' : 'red';
     },
     async getABNName(cell: any) {
+      console.log(cell.value);
+
       if (this.narrationMap[cell.value]) {
         return;
       }
@@ -194,10 +217,6 @@ export default {
       }
 
       this.$set(this.narrationMap, cell.value, foundAbn.Name);
-
-      if (foundAbn.NameType === 'Trading Name' || foundAbn.NameType === 'Business Name') {
-        return;
-      }
 
       let abnResult = await axios.get('/abr/abn', {
         params: {
