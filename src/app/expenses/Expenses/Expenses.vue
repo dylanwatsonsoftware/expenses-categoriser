@@ -52,6 +52,23 @@ import * as _ from 'lodash';
 
 import Papa from 'papaparse';
 
+enum Category {
+  Rent = 'Rent',
+  CouncilRates = 'Rates',
+  Utilities = 'Utilities',
+  PhoneTV = 'Phone/TV/Internet',
+  Groceries = 'Groceries',
+  Health = 'Health',
+  FoodEntertainment = 'Food & Entertainment',
+  ChildCare = 'Child Care',
+  School = 'School/Tuition',
+  ClothingBooksGifts = 'Clothing/Books/Gifts',
+  Transport = 'Transport',
+  Insurance = 'Insurance',
+  Charity = 'Charity',
+  Other = 'Other',
+}
+
 export default {
   metaInfo: {
     title: 'Expenses',
@@ -60,12 +77,11 @@ export default {
     return {
       narrationMap: {
         'PLINE PH JOONDALUP631    JOONDALUP': 'Priceline Pharmacy',
-        'WEST LEEDERVILLE         WEST LEEDERVIWA': 'Hylin'
+        'WEST LEEDERVILLE         WEST LEEDERVIWA': 'Hylin',
       },
       header: [],
       data: [],
-      donutData: [
-      ],
+      donutData: [],
     };
   },
   components: {
@@ -101,11 +117,17 @@ export default {
             slot: 'coloured',
           };
 
-          let categorise = (row: any, filter: string, category: string) => {
+          header['SubCategory'] = {
+            title: 'SubCategory',
+            slot: 'coloured',
+          };
+
+          let categorise = (row: any, filter: string, category: Category, subcategory: string) => {
             if (!row.Narration || row.Category) return;
 
-            if (new RegExp(filter).test(row.Narration) || new RegExp(filter).test(this.narrationMap[row.Narration]) ) {
-              row.Category = category;
+            if (new RegExp(filter).test(row.Narration) || new RegExp(filter).test(this.narrationMap[row.Narration])) {
+              row.Category = category.toString();
+              row.SubCategory = subcategory;
             }
           };
 
@@ -113,55 +135,74 @@ export default {
             categorise(
               row,
               '.*(Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
-              'Health',
+              Category.Health,
+              'Medical',
             );
-            categorise(row, '.*(KMART|RED DOT|BUNNINGS|BEST & LESS|HOME|TARGET|BIG W).*', 'House');
+            categorise(
+              row,
+              '.*(KMART|RED DOT|BUNNINGS|BEST & LESS|HOME|TARGET|BIG W).*',
+              Category.ClothingBooksGifts,
+              'House',
+            );
             categorise(
               row,
               '.*(Amazon Go|SPUDSHED|COLES|WOOLWORTHS|ALDI|IGA|BAKERY|MR FRESH|VEEOS|FRESH|Fresh|ORIENTAL).*',
+              Category.Groceries,
               'Groceries',
             );
             categorise(
               row,
               '.*(RAW N REAL|PAYSTAY|GAME CITY|ESPRESSO|Hylin|MAGDIEL|Filter & Fare|CAFE|Caffe|DELAWARE NORTH|Muzz Buzz|MAX AND SONS|LOWDOWN|ALH GROUP|UMA VIDA|YELO|KRUSTYKOB|COFFEE|HOLMES AND CO|96 Express|Holiday Inn City Centr|Coffee|GHIASSI|UTOPIA|Voodoo).*',
+              Category.FoodEntertainment,
               'Coffee',
             );
             categorise(
               row,
               '.*(MASS/INJ|INDIAN|HISS & SMOKE|Isle Of Voyage|THAI|MAD MEX|KFC|UNCLE JOES|DOMINOS|BBQ|SATAY|ZAMBRERO|CHIMEK|TOKYO STATION|LEEDERVILLE FOODS|DJ COMBINE|COLD ROCK|Jesters Pies|GREEKFELLAS|iL Tavolo Rustico|VASHNAV|CHINESE|ZHONG LIANG|GHIRARDELLI|Menulog|BOUDIN|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
-              'Food',
+              Category.FoodEntertainment,
+              'Take-out',
             );
-            categorise(row, '.*(REBEL|HBF RUN|SPORTS|GOOD LIFE).*', 'Sport');
-            categorise(row, '.*(HAIR|BARBER|NAILS|Threading).*', 'Hair/Makeup');
-            categorise(row, '.*(LIQUOR|DAN MURPHYS|STREET EATS|BEAUMONDE|BANKWEST FOUNDATION).*', 'Alcohol');
-            categorise(row, '.*(INSURANCE).*', 'Insurance');
-            categorise(row, '.*(NETFLIX).*', 'TV');
-            categorise(row, '.*(POST).*', 'Office');
-            categorise(row, '.*(BIRTHS DEATHS).*', 'Office');
-            categorise(row, '.*(BOOKS|AMAZON MKTPLC|BOOKDEPO|TREASA).*', 'Books');
-            categorise(row, '.*(GFP BABIES).*', 'Photos');
-            categorise(row, '.*(EBAY).*', 'eBay');
-            categorise(row, '.*(TELSTRA|OPTUS|AT&T).*', 'Mobile');
-            categorise(row, '.*(LATITUDE|PROUDS|ETSY).*', 'Jewellery');
-            categorise(row, '.*(MYER|RIVERS|SHOEMEN|WITCHERY|SUSSAN|MILLERS|WATERTOWN).*', 'Clothing');
-            categorise(row, '.*(Vehicle).*', 'Car');
-            categorise(row, '.*(CALTEX).*', 'Fuel');
-            categorise(row, '.*(UBER).*', 'Ridesharing');
-            categorise(row, '.*(Broadband|IINET).*', 'Internet');
-            categorise(row, '.*(PARK|CPP).*', 'Parking');
-            categorise(row, '.*(Vet|VET|PET).*', 'Pet');
-            categorise(row, '.*(SYNERGY).*', 'Utilities');
-            categorise(row, '.*(HYATT|OAKLAND|SAN FRANCISCO|AIRPORT|SAUSALITO).*', 'Travel');
-            categorise(row, '.*(OPEN DOOR).*', 'Charity');
+            categorise(row, '.*(REBEL|HBF RUN|SPORTS|GOOD LIFE).*', Category.Health, 'Sport');
+            categorise(row, '.*(HAIR|BARBER|NAILS|Threading).*', Category.Other, 'Hair/Makeup');
+            categorise(
+              row,
+              '.*(LIQUOR|DAN MURPHYS|STREET EATS|BEAUMONDE|BANKWEST FOUNDATION).*',
+              Category.FoodEntertainment,
+              'Alcohol',
+            );
+            categorise(row, '.*(INSURANCE).*', Category.Insurance, 'Insurance');
+            categorise(row, '.*(NETFLIX).*', Category.PhoneTV, 'TV');
+            categorise(row, '.*(POST).*', Category.ClothingBooksGifts, 'Office');
+            categorise(row, '.*(BIRTHS DEATHS).*', Category.ClothingBooksGifts, 'Office');
+            categorise(row, '.*(BOOKS|AMAZON MKTPLC|BOOKDEPO|TREASA).*', Category.ClothingBooksGifts, 'Books');
+            categorise(row, '.*(GFP BABIES).*', Category.Other, 'Photos');
+            categorise(row, '.*(EBAY).*', Category.Other, 'eBay');
+            categorise(row, '.*(TELSTRA|OPTUS|AT&T).*', Category.PhoneTV, 'Mobile');
+            categorise(row, '.*(LATITUDE|PROUDS|ETSY).*', Category.ClothingBooksGifts, 'Jewellery');
+            categorise(
+              row,
+              '.*(MYER|RIVERS|SHOEMEN|WITCHERY|SUSSAN|MILLERS|WATERTOWN).*',
+              Category.ClothingBooksGifts,
+              'Clothing',
+            );
+            categorise(row, '.*(Vehicle).*', Category.Transport, 'Car');
+            categorise(row, '.*(CALTEX).*', Category.Transport, 'Fuel');
+            categorise(row, '.*(UBER).*', Category.Transport, 'Ridesharing');
+            categorise(row, '.*(Broadband|IINET).*', Category.PhoneTV, 'Internet');
+            categorise(row, '.*(PARK|CPP).*', Category.Transport, 'Parking');
+            categorise(row, '.*(Vet|VET|PET).*', Category.Health, 'Pet');
+            categorise(row, '.*(SYNERGY).*', Category.Utilities, 'Utilities');
+            categorise(row, '.*(HYATT|OAKLAND|SAN FRANCISCO|AIRPORT|SAUSALITO).*', Category.Other, 'Travel');
+            categorise(row, '.*(OPEN DOOR).*', Category.Charity, 'Charity');
 
-            categorise(row, '.*(ENTERTAINMENT).*', 'Entertainment');
+            categorise(row, '.*(ENTERTAINMENT).*', Category.FoodEntertainment, 'Entertainment');
 
-            categorise(row, '.*(SQ *).*', 'Food');
-            categorise(row, '.*(PAYPAL|Groupon).*', 'Online Shopping');
+            categorise(row, '.*(SQ *).*', Category.FoodEntertainment, 'Food');
+            categorise(row, '.*(PAYPAL|Groupon).*', Category.Other, 'Online Shopping');
           });
 
           this.header = header;
-          this.data = results.data//.filter((row) => !row.Category);
+          this.data = results.data; //.filter((row) => !row.Category);
 
           let categories = _.groupBy(this.data, 'Category');
           let categoryArray = [];
@@ -219,8 +260,8 @@ export default {
       });
 
       if (abnResult.data.BusinessName.length) {
-        this.$set(this.narrationMap, cell.value, abnResult.data.BusinessName[0] + " - " + foundAbn.Name);
-        console.log('BusinessName', abnResult.data.BusinessName[0] + " - " + foundAbn.Name);
+        this.$set(this.narrationMap, cell.value, abnResult.data.BusinessName[0] + ' - ' + foundAbn.Name);
+        console.log('BusinessName', abnResult.data.BusinessName[0] + ' - ' + foundAbn.Name);
       } else {
         console.log('No business name found');
       }
