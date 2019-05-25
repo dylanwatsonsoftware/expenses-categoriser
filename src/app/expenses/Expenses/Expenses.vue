@@ -87,7 +87,7 @@ export default {
   methods: {
     ...mapActions('expenses', ['increment', 'decrement']),
     click(row: any) {
-      // alert(JSON.stringify(row));
+      console.log(row);
     },
     async loadCSV() {
       Papa.parse('/5524 1138 0113 3684_transaction_22_05_2019.csv', {
