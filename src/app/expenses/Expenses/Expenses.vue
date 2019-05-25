@@ -3,7 +3,7 @@
     <vue-grid>
       <vue-grid-row>
         <vue-grid-item fill>
-          <div style="width:100%; min-height: 950px;">
+          <div style="width:100%">
             <vue-donut-chart title="Expenses" :data="donutData" unit="AUD"/>
           </div>
 
