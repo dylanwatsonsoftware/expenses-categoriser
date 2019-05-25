@@ -2,6 +2,7 @@ import * as Express from 'express';
 import { applyMiddlewares } from './middlewares';
 import { DemoRoutes } from './routes/DemoRoutes';
 import { CounterRoutes } from './routes/CounterRoutes';
+import { ABR } from './routes/ABR';
 import { StaticRoutes } from './routes/StaticRoutes';
 import { SSRRoutes } from './routes/SSRRoutes';
 
@@ -15,6 +16,7 @@ applyMiddlewares(app);
  * routes to demonstrate the possibilities of vuesion
  * can be removed if you don't need them in your application
  */
+ABR(app);
 DemoRoutes(app);
 CounterRoutes(app);
 
