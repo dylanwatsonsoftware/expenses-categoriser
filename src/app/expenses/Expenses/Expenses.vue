@@ -3,7 +3,7 @@
     <vue-grid>
       <vue-grid-row>
         <vue-grid-item fill>
-          <div style="width:100%">
+          <div style="width:100%; min-height: 950px;">
             <vue-donut-chart title="Expenses" :data="donutData" unit="AUD"/>
           </div>
 
@@ -46,7 +46,6 @@ import VueGridRow from '@/app/shared/components/VueGridRow/VueGridRow.vue';
 import VueHeadline from '@/app/shared/components/VueHeadline/VueHeadline.vue';
 import VueDataTable from '@/app/shared/components/VueDataTable/VueDataTable.vue';
 import VueDonutChart from '@/app/shared/components/VueDonutChart/VueDonutChart.vue';
-import { dataTableHeaderFixture, dataTableDataFixture } from '@/app/shared/components/VueDataTable/DataTableFixtures';
 import axios from 'axios';
 
 import * as _ from 'lodash';
@@ -63,15 +62,9 @@ export default {
         'PLINE PH JOONDALUP631    JOONDALUP': 'Priceline Pharmacy',
         'WEST LEEDERVILLE         WEST LEEDERVIWA': 'Hylin'
       },
-      header: dataTableHeaderFixture,
-      data: dataTableDataFixture,
+      header: [],
+      data: [],
       donutData: [
-        { label: 'Ironman', value: 892 },
-        { label: 'Vision', value: 480 },
-        { label: 'Hulk', value: 1506 },
-        { label: 'Spiderman', value: 795 },
-        { label: 'Thor', value: 579 },
-        { label: 'Ant-man', value: 230 },
       ],
     };
   },
