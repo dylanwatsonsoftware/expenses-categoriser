@@ -15,8 +15,11 @@
             @click="click"
           >
             <template v-slot:coloured="{ cell, row }">
-              <button v-if="cell.key === 'Narration'" @click="getABNName(row)">Search</button>
-              <div :style="{ color: colour(row) }">{{cell.value}}</div>
+              <button
+                v-if="cell.key === 'Narration' && !cell.hideSearch"
+                @click="getABNName(cell, row)"
+              >Search</button>
+              <div :style="{ color: colour(row) }">{{narrationMap[cell.value]}}<br>{{cell.value}}</div>
             </template>
           </vue-data-table>
         </vue-grid-item>
@@ -50,6 +53,7 @@ export default {
   },
   data: () => {
     return {
+      narrationMap: {},
       header: dataTableHeaderFixture,
       data: dataTableDataFixture,
       donutData: [
@@ -74,7 +78,7 @@ export default {
   methods: {
     ...mapActions('expenses', ['increment', 'decrement']),
     click(row: any) {
-      alert(JSON.stringify(row));
+      // alert(JSON.stringify(row));
     },
     async loadCSV() {
       Papa.parse('/5524 1138 0113 3684_transaction_22_05_2019.csv', {
@@ -168,20 +172,47 @@ export default {
     colour(row: any) {
       return row['Narration'] && row.Category ? 'black' : 'red';
     },
-    getABNName(row: any) {
-      const abrName = row['Narration'].split('  ')[0];
+    async getABNName(cell: any) {
+      if (this.narrationMap[cell.value]) {
+        return;
+      }
 
-      axios
-        .get('/abr/names', {
-          params: {
-            maxResults: 1,
-            name: abrName,
-          },
-        })
-        .then((result) => {
-          console.log(result.data.Names[0]);
-          row.Narration = JSON.stringify(result.data)
-        });
+      const abrName = cell.value.split('  ')[0];
+
+      let result = await axios.get('/abr/names', {
+        params: {
+          maxResults: 1,
+          name: abrName,
+        },
+      });
+
+      let foundAbn = result.data.Names[0];
+      console.log(foundAbn);
+      if (!foundAbn) {
+        console.log('No ABN found');
+        return;
+      }
+
+      this.$set(this.narrationMap, cell.value, foundAbn.Name);
+
+      if (foundAbn.NameType === 'Trading Name' || foundAbn.NameType === 'Business Name') {
+        return;
+      }
+
+      let abnResult = await axios.get('/abr/abn', {
+        params: {
+          maxResults: 1,
+          abn: foundAbn.Abn,
+        },
+      });
+
+      if (abnResult.data.BusinessName.length) {
+        this.$set(this.narrationMap, cell.value, abnResult.data.BusinessName[0]);
+        console.log('BusinessName', abnResult.data.BusinessName[0]);
+      } else {
+        console.log('No business name found');
+      }
+      console.log(abnResult.data);
     },
   },
   computed: {
