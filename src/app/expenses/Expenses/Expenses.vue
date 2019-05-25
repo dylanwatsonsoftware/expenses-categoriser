@@ -15,6 +15,7 @@
             @click="click"
           >
             <template v-slot:coloured="{ cell, row }">
+              <button v-if="cell.key === 'Narration'" @click="getABNName(row)">Search</button>
               <div :style="{ color: colour(row) }">{{cell.value}}</div>
             </template>
           </vue-data-table>
@@ -37,6 +38,7 @@ import VueHeadline from '@/app/shared/components/VueHeadline/VueHeadline.vue';
 import VueDataTable from '@/app/shared/components/VueDataTable/VueDataTable.vue';
 import VueDonutChart from '@/app/shared/components/VueDonutChart/VueDonutChart.vue';
 import { dataTableHeaderFixture, dataTableDataFixture } from '@/app/shared/components/VueDataTable/DataTableFixtures';
+import axios from 'axios';
 
 import * as _ from 'lodash';
 
@@ -98,7 +100,6 @@ export default {
 
             if (new RegExp(filter).test(row.Narration)) {
               row.Category = category;
-              console.log(row);
             }
           };
 
@@ -166,6 +167,21 @@ export default {
     },
     colour(row: any) {
       return row['Narration'] && row.Category ? 'black' : 'red';
+    },
+    getABNName(row: any) {
+      const abrName = row['Narration'].split('  ')[0];
+
+      axios
+        .get('/abr/names', {
+          params: {
+            maxResults: 1,
+            name: abrName,
+          },
+        })
+        .then((result) => {
+          console.log(result.data.Names[0]);
+          row.Narration = JSON.stringify(result.data)
+        });
     },
   },
   computed: {
