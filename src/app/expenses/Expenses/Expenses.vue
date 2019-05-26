@@ -79,7 +79,7 @@ export default {
         'PLINE PH JOONDALUP631    JOONDALUP': 'Priceline Pharmacy',
         'WEST LEEDERVILLE         WEST LEEDERVIWA': 'Hylin',
       },
-      header: [],
+      header: {},
       data: [],
       donutData: [],
     };
@@ -135,7 +135,7 @@ export default {
           results.data.forEach((row) => {
             categorise(
               row,
-              '.*(Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
+              '.*(CHEMIST|Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
               Category.Health,
               'Medical',
             );
@@ -159,7 +159,7 @@ export default {
             );
             categorise(
               row,
-              '.*(MASS/INJ|INDIAN|HISS & SMOKE|Isle Of Voyage|THAI|MAD MEX|KFC|UNCLE JOES|DOMINOS|BBQ|SATAY|ZAMBRERO|CHIMEK|TOKYO STATION|LEEDERVILLE FOODS|DJ COMBINE|COLD ROCK|Jesters Pies|GREEKFELLAS|iL Tavolo Rustico|VASHNAV|CHINESE|ZHONG LIANG|GHIRARDELLI|Menulog|BOUDIN|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
+              '.*(GANPING LIN|HJ |BENANDJERRY|HOLEY MOLEY|MASS/INJ|INDIAN|HISS & SMOKE|Isle Of Voyage|THAI|MAD MEX|KFC|UNCLE JOES|DOMINOS|BBQ|SATAY|ZAMBRERO|CHIMEK|TOKYO STATION|LEEDERVILLE FOODS|DJ COMBINE|COLD ROCK|Jesters Pies|GREEKFELLAS|iL Tavolo Rustico|VASHNAV|CHINESE|ZHONG LIANG|GHIRARDELLI|Menulog|BOUDIN|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
               Category.FoodEntertainment,
               'Take-out',
             );
@@ -189,7 +189,8 @@ export default {
             categorise(row, '.*(Vehicle).*', Category.Transport, 'Car');
             categorise(row, '.*(CALTEX).*', Category.Transport, 'Fuel');
             categorise(row, '.*(UBER).*', Category.Transport, 'Ridesharing');
-            categorise(row, '.*(Broadband|IINET).*', Category.PhoneTV, 'Internet');
+            categorise(row, '.*(TRANSPERTH).*', Category.Transport, 'Public Transport');
+            categorise(row, '.*(Broadband|BROADBAND|IINET).*', Category.PhoneTV, 'Internet');
             categorise(row, '.*(PARK|CPP).*', Category.Transport, 'Parking');
             categorise(row, '.*(Vet|VET|PET).*', Category.Health, 'Pet');
             categorise(row, '.*(SYNERGY).*', Category.Utilities, 'Utilities');
