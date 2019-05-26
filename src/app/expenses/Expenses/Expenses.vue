@@ -47,6 +47,7 @@ import VueHeadline from '@/app/shared/components/VueHeadline/VueHeadline.vue';
 import VueDataTable from '@/app/shared/components/VueDataTable/VueDataTable.vue';
 import VueDonutChart from '@/app/shared/components/VueDonutChart/VueDonutChart.vue';
 import axios from 'axios';
+import moment from 'moment';
 
 import * as _ from 'lodash';
 
@@ -132,6 +133,8 @@ export default {
             }
           };
 
+          results.data = results.data.filter(row => row.Narration)
+
           results.data.forEach((row) => {
             categorise(
               row,
@@ -206,6 +209,11 @@ export default {
           this.header = header;
           this.data = results.data; //.filter((row) => !row.Category);
 
+          let lastDate = moment(this.data[this.data.length - 1]['Transaction Date'], "DD/MM/YYYY");
+
+          let monthsSince = moment().diff(lastDate, 'months', true)
+          console.log('Transactions cover ' + monthsSince + " months")
+
           let categories = _.groupBy(this.data, 'Category');
           let categoryArray = [];
           this.donutData = [];
@@ -219,7 +227,7 @@ export default {
                     Debit: parseFloat(r.Debit) || 0,
                   })),
                   'Debit',
-                ),
+                ) / monthsSince,
               ),
             });
           }
