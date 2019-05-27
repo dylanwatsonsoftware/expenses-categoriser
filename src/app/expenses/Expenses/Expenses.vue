@@ -82,7 +82,6 @@ export default {
       },
       header: {},
       data: [],
-      donutData: [],
     };
   },
   components: {
@@ -133,7 +132,7 @@ export default {
             }
           };
 
-          results.data = results.data.filter(row => row.Narration)
+          
 
           results.data.forEach((row) => {
             categorise(
@@ -204,33 +203,12 @@ export default {
 
             categorise(row, '.*(SQ *).*', Category.FoodEntertainment, 'Food');
             categorise(row, '.*(PAYPAL|Groupon).*', Category.Other, 'Online Shopping');
+
           });
 
           this.header = header;
-          this.data = results.data; //.filter((row) => !row.Category);
-
-          let lastDate = moment(this.data[this.data.length - 1]['Transaction Date'], "DD/MM/YYYY");
-
-          let monthsSince = moment().diff(lastDate, 'months', true)
-          console.log('Transactions cover ' + monthsSince + " months")
-
-          let categories = _.groupBy(this.data, 'Category');
-          let categoryArray = [];
-          this.donutData = [];
-          for (let key in <any>categories) {
-            this.donutData.push({
-              label: key === 'undefined' ? 'Other' : key,
-              value: Math.round(
-                _.sumBy(
-                  categories[key].map((r: any) => ({
-                    ...r,
-                    Debit: parseFloat(r.Debit) || 0,
-                  })),
-                  'Debit',
-                ) / monthsSince,
-              ),
-            });
-          }
+          this.data = [this.data, ...results.data].filter((row) => row.Narration && row.Narration.length);
+          // this.data = results.data; //.filter((row) => !row.Category);
         },
       });
     },
@@ -277,9 +255,40 @@ export default {
       }
       console.log(abnResult.data);
     },
+    
   },
   computed: {
     ...mapGetters('expenses', ['count', 'incrementPending', 'decrementPending']),
+    donutData() {
+      if (!this.data.length) {
+        return [];
+      }
+
+      let lastDate = moment(this.data[this.data.length - 1]['Transaction Date'], 'DD/MM/YYYY');
+
+      let monthsSince = moment().diff(lastDate, 'months', true);
+      console.log('Transactions cover ' + monthsSince + ' months');
+
+      let categories = _.groupBy(this.data, 'Category');
+      let categoryArray = [];
+      let donutData: { label: string; value: Number }[] = [];
+      for (let key in <any>categories) {
+        donutData.push({
+          label: key === 'undefined' ? 'Other' : key,
+          value: Math.round(
+            _.sumBy(
+              categories[key].map((r: any) => ({
+                ...r,
+                Debit: parseFloat(r.Debit) || 0,
+              })),
+              'Debit',
+            ) / monthsSince,
+          ),
+        });
+      }
+
+      return donutData;
+    },
   },
   beforeCreate() {
     registerModule('expenses', ExpensesModule);
