@@ -98,13 +98,12 @@ export default {
     click(row: any) {
       console.log(row);
     },
-    async loadCSV() {
-
-      Papa.parse('/CreditCard_transaction_27_05_2019.csv', {
+    async loadCSV(file: string) {
+      Papa.parse(file, {
         header: true,
         download: true,
         complete: (results) => {
-          console.log('results', results);
+          console.log(file, results);
           var header: any = {};
           for (var key of Object.keys(results.data[0])) {
             header[key] = {
@@ -123,6 +122,11 @@ export default {
             slot: 'coloured',
           };
 
+          header['File'] = {
+            title: 'File',
+            slot: 'coloured',
+          };
+
           let categorise = (row: any, filter: string, category: Category, subcategory: string) => {
             if (!row.Narration || row.Category) return;
 
@@ -132,9 +136,9 @@ export default {
             }
           };
 
-          
-
           results.data.forEach((row) => {
+            row['File'] = file;
+
             categorise(
               row,
               '.*(CHEMIST|Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
@@ -203,12 +207,10 @@ export default {
 
             categorise(row, '.*(SQ *).*', Category.FoodEntertainment, 'Food');
             categorise(row, '.*(PAYPAL|Groupon).*', Category.Other, 'Online Shopping');
-
           });
 
           this.header = header;
-          this.data = [this.data, ...results.data].filter((row) => row.Narration && row.Narration.length);
-          // this.data = results.data; //.filter((row) => !row.Category);
+          this.data.push(...results.data.filter((row) => row.Narration && row.Narration.length))
         },
       });
     },
@@ -294,7 +296,9 @@ export default {
     registerModule('expenses', ExpensesModule);
   },
   created() {
-    this.loadCSV();
+    // this.loadCSV('/CreditCard_transaction_27_05_2019.csv'); // Credit Card
+    // this.loadCSV('/Var1_transaction_27_05_2019.csv'); // Variable Offset
+    this.loadCSV('/Fixed1_transaction_27_05_2019.csv'); // Fixed Offset - Everyday
   },
   prefetch: (options: IPreLoad) => {
     registerModule('expenses', ExpensesModule);
