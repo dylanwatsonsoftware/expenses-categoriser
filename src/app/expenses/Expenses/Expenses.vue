@@ -3,7 +3,7 @@
     <vue-grid>
       <vue-grid-row>
         <vue-grid-item fill>
-          <div style="width:100%">
+          <div style="width:50%">
             <vue-donut-chart title="Expenses" :data="donutData" unit="AUD"/>
           </div>
 
@@ -68,6 +68,7 @@ enum Category {
   Insurance = 'Insurance',
   Charity = 'Charity',
   Other = 'Other',
+  Ignore = 'Ignore',
 }
 
 export default {
@@ -104,6 +105,7 @@ export default {
         download: true,
         complete: (results) => {
           console.log(file, results);
+
           var header: any = {};
           for (var key of Object.keys(results.data[0])) {
             header[key] = {
@@ -116,16 +118,15 @@ export default {
             title: 'Category',
             slot: 'coloured',
           };
-
           header['SubCategory'] = {
             title: 'SubCategory',
             slot: 'coloured',
           };
-
           header['File'] = {
             title: 'File',
             slot: 'coloured',
           };
+          this.header = header;
 
           let categorise = (row: any, filter: string, category: Category, subcategory: string) => {
             if (!row.Narration || row.Category) return;
@@ -141,7 +142,7 @@ export default {
 
             categorise(
               row,
-              '.*(CHEMIST|Diagnostic|Hospital|paed|Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
+              '.*(CHEMIST|Diagnostic|(H|h)ospital|paed|Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
               Category.Health,
               'Medical',
             );
@@ -165,13 +166,14 @@ export default {
             );
             categorise(
               row,
-              '.*(GANPING LIN|HJ |BENANDJERRY|HOLEY MOLEY|MASS/INJ|INDIAN|HISS & SMOKE|Isle Of Voyage|THAI|MAD MEX|KFC|UNCLE JOES|DOMINOS|BBQ|SATAY|ZAMBRERO|CHIMEK|TOKYO STATION|LEEDERVILLE FOODS|DJ COMBINE|COLD ROCK|Jesters Pies|GREEKFELLAS|iL Tavolo Rustico|VASHNAV|CHINESE|ZHONG LIANG|GHIRARDELLI|Menulog|BOUDIN|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
+              '.*(BEEM IT|GANPING LIN|HJ |BENANDJERRY|HOLEY MOLEY|MASS/INJ|INDIAN|HISS & SMOKE|Isle Of Voyage|THAI|MAD MEX|KFC|UNCLE JOES|DOMINOS|BBQ|SATAY|ZAMBRERO|CHIMEK|TOKYO STATION|LEEDERVILLE FOODS|DJ COMBINE|COLD ROCK|Jesters Pies|GREEKFELLAS|iL Tavolo Rustico|VASHNAV|CHINESE|ZHONG LIANG|GHIRARDELLI|Menulog|BOUDIN|KEBAB|BOOST JUICE|SHY JOHN|GRILLD|SUBWAY|GREENHORNS|SUN KWONG|SUNNYSIDE UP|JAPANESE|SUSHI|FRO YO|MCDONALDS|PHETCHABURA|HAWELI|WILD FIG|MEET AND BUN|KITCHEN|Tim Ho Wan|BURGER).*',
               Category.FoodEntertainment,
               'Take-out',
             );
-            categorise(row, '.*(REBEL|HBF RUN|SPORTS|GOOD LIFE).*', Category.Health, 'Sport');
+            categorise(row, '.*(REBEL|HBF RUN|SPORTS|GOOD LIFE|Hockey|Umpiring).*', Category.Health, 'Sport');
             categorise(row, '.*(HAIR|BARBER|NAILS|Threading).*', Category.Other, 'Hair/Makeup');
             categorise(row, '.*(Clean|rob stoltze).*', Category.Other, 'House')
+            categorise(row, '.*(ATM).*', Category.Other, 'Cash')
             categorise(
               row,
               '.*(LIQUOR|DAN MURPHYS|STREET EATS|BEAUMONDE|BANKWEST FOUNDATION).*',
@@ -208,13 +210,12 @@ export default {
 
             categorise(row, '.*(COMPLETE FIXED HL|COMPLETE VARIABLE HL).*', Category.Mortgage, 'Mortgage Repayments');
 
-            categorise(row, '.*(PERIODICAL PAYMENT TO MASTERCARD).*', Category.Mortgage, 'Credit Card')
+            categorise(row, '.*(PERIODICAL PAYMENT TO MASTERCARD|IB TRANSFER).*', Category.Ignore, 'Ignore')
 
             categorise(row, '.*(SQ *).*', Category.FoodEntertainment, 'Food');
             categorise(row, '.*(PAYPAL|Groupon).*', Category.Other, 'Online Shopping');
           });
 
-          this.header = header;
           this.data.push(...results.data.filter((row) => row.Narration && row.Narration.length))
         },
       });
@@ -300,8 +301,8 @@ export default {
     registerModule('expenses', ExpensesModule);
   },
   created() {
-    // this.loadCSV('/CreditCard_transaction_27_05_2019.csv'); // Credit Card
-    // this.loadCSV('/Var1_transaction_27_05_2019.csv'); // Variable Offset
+    this.loadCSV('/CreditCard_transaction_27_05_2019.csv'); // Credit Card
+    this.loadCSV('/Var1_transaction_27_05_2019.csv'); // Variable Offset
     this.loadCSV('/Fixed1_transaction_27_05_2019.csv'); // Fixed Offset - Everyday
   },
   prefetch: (options: IPreLoad) => {
