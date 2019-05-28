@@ -54,7 +54,7 @@ import * as _ from 'lodash';
 import Papa from 'papaparse';
 
 enum Category {
-  Rent = 'Rent',
+  Mortgage = 'Mortage',
   CouncilRates = 'Rates',
   Utilities = 'Utilities',
   PhoneTV = 'Phone/TV/Internet',
@@ -141,7 +141,7 @@ export default {
 
             categorise(
               row,
-              '.*(CHEMIST|Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
+              '.*(CHEMIST|Diagnostic|Hospital|paed|Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
               Category.Health,
               'Medical',
             );
@@ -171,6 +171,7 @@ export default {
             );
             categorise(row, '.*(REBEL|HBF RUN|SPORTS|GOOD LIFE).*', Category.Health, 'Sport');
             categorise(row, '.*(HAIR|BARBER|NAILS|Threading).*', Category.Other, 'Hair/Makeup');
+            categorise(row, '.*(Clean|rob stoltze).*', Category.Other, 'House')
             categorise(
               row,
               '.*(LIQUOR|DAN MURPHYS|STREET EATS|BEAUMONDE|BANKWEST FOUNDATION).*',
@@ -195,7 +196,7 @@ export default {
             categorise(row, '.*(Vehicle).*', Category.Transport, 'Car');
             categorise(row, '.*(CALTEX).*', Category.Transport, 'Fuel');
             categorise(row, '.*(UBER).*', Category.Transport, 'Ridesharing');
-            categorise(row, '.*(TRANSPERTH).*', Category.Transport, 'Public Transport');
+            categorise(row, '.*(TRANSPERTH|SMARTRIDER).*', Category.Transport, 'Public Transport');
             categorise(row, '.*(Broadband|BROADBAND|IINET).*', Category.PhoneTV, 'Internet');
             categorise(row, '.*(PARK|CPP).*', Category.Transport, 'Parking');
             categorise(row, '.*(Vet|VET|PET).*', Category.Health, 'Pet');
@@ -203,7 +204,11 @@ export default {
             categorise(row, '.*(HYATT|OAKLAND|SAN FRANCISCO|AIRPORT|SAUSALITO).*', Category.Other, 'Travel');
             categorise(row, '.*(OPEN DOOR).*', Category.Charity, 'Charity');
 
-            categorise(row, '.*(ENTERTAINMENT).*', Category.FoodEntertainment, 'Entertainment');
+            categorise(row, '.*(ENTERTAINMENT|Golden State Warriors).*', Category.FoodEntertainment, 'Entertainment');
+
+            categorise(row, '.*(COMPLETE FIXED HL|COMPLETE VARIABLE HL).*', Category.Mortgage, 'Mortgage Repayments');
+
+            categorise(row, '.*(PERIODICAL PAYMENT TO MASTERCARD).*', Category.Mortgage, 'Credit Card')
 
             categorise(row, '.*(SQ *).*', Category.FoodEntertainment, 'Food');
             categorise(row, '.*(PAYPAL|Groupon).*', Category.Other, 'Online Shopping');
@@ -257,7 +262,6 @@ export default {
       }
       console.log(abnResult.data);
     },
-    
   },
   computed: {
     ...mapGetters('expenses', ['count', 'incrementPending', 'decrementPending']),
