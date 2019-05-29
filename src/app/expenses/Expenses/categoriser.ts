@@ -32,6 +32,7 @@ export class Categoriser {
   }
 
   categoriseAll(row: any) {
+    row.Narration = row.Narration && row.Narration.replace('AUTHORISATION ONLY - ', '');
     this.categorise(
       row,
       '.*(CHEMIST|Diagnostic|(H|h)ospital|paed|Radiology|PLINE|PHARMACY|MASSAGE|HEALTH|PHYSIO|Obgyn|PHILIP ROWLANDS|TERRY WHITE|WALGREENS|ARMANDO CHIERA|JASON KIELY|FOOT HAVEN).*',
