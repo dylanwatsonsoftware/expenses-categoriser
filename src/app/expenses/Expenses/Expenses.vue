@@ -88,26 +88,32 @@ export default {
         complete: (results) => {
           console.log(file, results);
 
-          var header: any = {};
+          var header: any = {
+            Category: {
+              title: 'Category',
+              slot: 'coloured',
+            },
+            SubCategory: {
+              title: 'SubCategory',
+              slot: 'coloured',
+            },
+            // File: {
+            //   title: 'File',
+            //   slot: 'coloured',
+            // },
+          };
+
           for (var key of Object.keys(results.data[0])) {
+            if (key === 'BSB Number' || key === 'Account Number' || key === 'Cheque') {
+              continue;
+            }
+
             header[key] = {
               title: key,
               slot: 'coloured',
             };
           }
 
-          header['Category'] = {
-            title: 'Category',
-            slot: 'coloured',
-          };
-          header['SubCategory'] = {
-            title: 'SubCategory',
-            slot: 'coloured',
-          };
-          header['File'] = {
-            title: 'File',
-            slot: 'coloured',
-          };
           this.header = header;
 
           results.data.forEach((row) => {
