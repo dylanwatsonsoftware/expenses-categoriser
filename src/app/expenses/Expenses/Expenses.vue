@@ -54,16 +54,15 @@ import * as _ from 'lodash';
 import Papa from 'papaparse';
 import { Category, Categoriser } from './categoriser';
 
+let categoriser: Categoriser = new Categoriser();
+
 export default {
   metaInfo: {
     title: 'Expenses',
   },
   data: () => {
     return {
-      narrationMap: {
-        'PLINE PH JOONDALUP631    JOONDALUP': 'Priceline Pharmacy',
-        'WEST LEEDERVILLE         WEST LEEDERVIWA': 'Hylin',
-      },
+      narrationMap: categoriser.narrationMap,
       header: {},
       data: [],
     };
@@ -83,8 +82,6 @@ export default {
       console.log(row);
     },
     async loadCSV(file: string) {
-      let categoriser : Categoriser = new Categoriser();
-
       Papa.parse(file, {
         header: true,
         download: true,
