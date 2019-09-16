@@ -78,7 +78,7 @@
   },
   "devDependencies": {
     "@commitlint/cli": "7.5.2",
-    "@commitlint/config-conventional": "7.5.0",
+    "@commitlint/config-conventional": "8.2.0",
     "@types/animejs": "2.0.2",
     "@types/body-parser": "1.17.0",
     "@types/compression": "0.0.36",
